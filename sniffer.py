@@ -50,11 +50,12 @@ class Sniffer(object):
         self._thread.start()
 
     def __iter__(self):
-        value = 1
-        while value:
+        while True:
             value = self.queue.get()
             if value is not None:
                 yield value
+            else:
+                break
         self._thread.join()
         del self._thread
         self._stop = False
