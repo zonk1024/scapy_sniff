@@ -19,7 +19,10 @@ class Sniffer(object):
         self.start()
 
     def kill(self):
+        if not hasattr(self, '_thread'):
+            raise Exception('Kill what?')
         self._kill = True
+        self._thread.join()
 
     def prn_func(self, value):
         if self._kill:
@@ -62,5 +65,5 @@ if __name__ == '__main__':
     sniffer = Sniffer(filter=sniff_filter, count=128)  #TODO argparse (dynamic?) *args, **options
     print 'Running'
     for i, p in enumerate(sniffer):
-        print i,
+        print '\n', i
         p.show()
