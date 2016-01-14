@@ -54,7 +54,12 @@ class Sniffer(object):
 
 
 if __name__ == '__main__':
-    sniffer = Sniffer(filter=argv[1], count=128)  #TODO argparse (dynamic?) *args, **options
+    sniff_filter = None
+    try:
+        sniff_filter = argv[1]
+    except:
+        pass
+    sniffer = Sniffer(filter=sniff_filter, count=128)  #TODO argparse (dynamic?) *args, **options
     print 'Running'
     for i, p in enumerate(sniffer):
         print i,
