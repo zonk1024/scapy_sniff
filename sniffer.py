@@ -33,7 +33,7 @@ class Sniffer(object):
         except Exception as e:
             if not self._once:
                 print 'Exception on thread:', repr(e), '\n', self.args, '\n, self.kwargs, '\n\n'
-                print 'Since I didn\'t have a single succes you should probably be reminded to use sudo'
+                print 'Since I didn\'t have a single success you should probably be reminded to use sudo'
                 raise
         self.kill()
         self.queue.put(None)  # make sure things have an iteration after thread stops
@@ -54,7 +54,7 @@ class Sniffer(object):
 
 
 if __name__ == '__main__':
-    sniffer = Sniffer(filter=argv[1], count=128)  #TODO argpars (dynamic?) *args, **options
+    sniffer = Sniffer(filter=argv[1], count=128)  #TODO argparse (dynamic?) *args, **options
     print 'Running'
     for i, p in enumerate(sniffer):
         print i,
