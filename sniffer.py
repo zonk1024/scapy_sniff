@@ -32,7 +32,7 @@ class Sniffer(object):
             sniff(*self.args, **self.kwargs)
         except Exception as e:
             if not self._once:
-                print 'Exception on thread:', repr(e), '\n', self.args, '\n, self.kwargs, '\n\n'
+                print 'Exception on thread:', repr(e), '\n', self.args, '\n', self.kwargs, '\n\n'
                 print 'Since I didn\'t have a single success you should probably be reminded to use sudo'
                 raise
         self.kill()
