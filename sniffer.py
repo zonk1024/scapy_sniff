@@ -10,7 +10,7 @@ class Sniffer(object):
 
     def __init__(self, *args, **kwargs):
         self.started = False
-        self._kill = False
+        self._stop = False
         self._once = False
         self.queue = Queue()
         kwargs['prn'] = self.prn_func
@@ -18,14 +18,14 @@ class Sniffer(object):
         self.kwargs = kwargs
         self.start()
 
-    def kill(self):
+    def stop(self):
         if not hasattr(self, '_thread'):
             raise Exception('Kill what?')
-        self._kill = True
-        self._thread.join()
+        self._stop = True
+        self.started = False
 
     def prn_func(self, value):
-        if self._kill:
+        if self._stop:
             raise Exception('Stop thread')
         self._once = True
         self.queue.put(value)
@@ -38,7 +38,7 @@ class Sniffer(object):
                 print 'Exception on thread:', repr(e), '\n', self.args, '\n', self.kwargs, '\n\n'
                 print 'Since I didn\'t have a single success you should probably be reminded to use sudo'
                 raise
-        self.kill()
+        self.stop()
         self.queue.put(None)  # make sure things have an iteration after thread stops
 
     def start(self):
@@ -50,20 +50,33 @@ class Sniffer(object):
         self._thread.start()
 
     def __iter__(self):
-        while not self._kill:
+        value = 1
+        while value:
             value = self.queue.get()
             if value is not None:
                 yield value
+        self._thread.join()
+        del self._thread
+        self._stop = False
 
 
 if __name__ == '__main__':
+    # just proof of concept here
     sniff_filter = None
     try:
         sniff_filter = argv[1]
     except:
         pass
-    sniffer = Sniffer(filter=sniff_filter, count=128)  #TODO argparse (dynamic?) *args, **options
-    print 'Running'
+    sniffer = Sniffer(filter=sniff_filter, count=8)  #TODO argparse (dynamic?) *args, **options for cli
+    print 'Running once'
     for i, p in enumerate(sniffer):
         print '\n', i
         p.show()
+
+    sniffer.start()
+    print 'Running again'
+    for i, p in enumerate(sniffer):
+        print '\n', i
+        p.show()
+
+    print 'Ran twice'
